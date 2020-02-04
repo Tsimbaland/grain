@@ -1,6 +1,5 @@
 package com.tsymbaliuk.grainapp.web;
 
-import com.tsymbaliuk.grainapp.repositories.CustomerDAO;
 import com.tsymbaliuk.grainapp.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class WebController {
 
-    private final CustomerDAO customerDAO;
     private final CustomerService customerService;
 
     @GetMapping(path = "/")
