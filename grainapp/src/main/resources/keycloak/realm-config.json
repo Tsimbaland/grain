@@ -916,6 +916,7 @@
           "consentRequired": false,
           "config": {
             "multivalued": "true",
+            "userinfo.token.claim": "true",
             "user.attribute": "foo",
             "id.token.claim": "true",
             "access.token.claim": "true",
@@ -1295,9 +1296,17 @@
   ],
   "defaultDefaultClientScopes": [
     "role_list",
-    "roles"
+    "profile",
+    "email",
+    "roles",
+    "web-origins"
   ],
-  "defaultOptionalClientScopes": [],
+  "defaultOptionalClientScopes": [
+    "offline_access",
+    "address",
+    "phone",
+    "microprofile-jwt"
+  ],
   "browserSecurityHeaders": {
     "contentSecurityPolicyReportOnly": "",
     "xContentTypeOptions": "nosniff",
@@ -1308,11 +1317,81 @@
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
   "smtpServer": {},
+  "loginTheme": "keycloak",
   "eventsEnabled": false,
   "eventsListeners": [
+    "logout-provider",
     "jboss-logging"
   ],
-  "enabledEventTypes": [],
+  "enabledEventTypes": [
+    "UPDATE_CONSENT_ERROR",
+    "SEND_RESET_PASSWORD",
+    "GRANT_CONSENT",
+    "UPDATE_TOTP",
+    "REMOVE_TOTP",
+    "REVOKE_GRANT",
+    "LOGIN_ERROR",
+    "CLIENT_LOGIN",
+    "RESET_PASSWORD_ERROR",
+    "IMPERSONATE_ERROR",
+    "CODE_TO_TOKEN_ERROR",
+    "CUSTOM_REQUIRED_ACTION",
+    "RESTART_AUTHENTICATION",
+    "UPDATE_PROFILE_ERROR",
+    "IMPERSONATE",
+    "LOGIN",
+    "UPDATE_PASSWORD_ERROR",
+    "CLIENT_INITIATED_ACCOUNT_LINKING",
+    "TOKEN_EXCHANGE",
+    "REGISTER",
+    "LOGOUT",
+    "CLIENT_REGISTER",
+    "IDENTITY_PROVIDER_LINK_ACCOUNT",
+    "UPDATE_PASSWORD",
+    "FEDERATED_IDENTITY_LINK_ERROR",
+    "CLIENT_DELETE",
+    "IDENTITY_PROVIDER_FIRST_LOGIN",
+    "VERIFY_EMAIL",
+    "CLIENT_DELETE_ERROR",
+    "CLIENT_LOGIN_ERROR",
+    "RESTART_AUTHENTICATION_ERROR",
+    "REMOVE_FEDERATED_IDENTITY_ERROR",
+    "EXECUTE_ACTIONS",
+    "TOKEN_EXCHANGE_ERROR",
+    "PERMISSION_TOKEN",
+    "SEND_IDENTITY_PROVIDER_LINK_ERROR",
+    "EXECUTE_ACTION_TOKEN_ERROR",
+    "SEND_VERIFY_EMAIL",
+    "EXECUTE_ACTIONS_ERROR",
+    "REMOVE_FEDERATED_IDENTITY",
+    "IDENTITY_PROVIDER_POST_LOGIN",
+    "IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR",
+    "UPDATE_EMAIL",
+    "REGISTER_ERROR",
+    "REVOKE_GRANT_ERROR",
+    "LOGOUT_ERROR",
+    "UPDATE_EMAIL_ERROR",
+    "EXECUTE_ACTION_TOKEN",
+    "CLIENT_UPDATE_ERROR",
+    "UPDATE_PROFILE",
+    "FEDERATED_IDENTITY_LINK",
+    "CLIENT_REGISTER_ERROR",
+    "SEND_VERIFY_EMAIL_ERROR",
+    "SEND_IDENTITY_PROVIDER_LINK",
+    "RESET_PASSWORD",
+    "CLIENT_INITIATED_ACCOUNT_LINKING_ERROR",
+    "UPDATE_CONSENT",
+    "REMOVE_TOTP_ERROR",
+    "VERIFY_EMAIL_ERROR",
+    "SEND_RESET_PASSWORD_ERROR",
+    "CLIENT_UPDATE",
+    "IDENTITY_PROVIDER_POST_LOGIN_ERROR",
+    "CUSTOM_REQUIRED_ACTION_ERROR",
+    "UPDATE_TOTP_ERROR",
+    "CODE_TO_TOKEN",
+    "GRANT_CONSENT_ERROR",
+    "IDENTITY_PROVIDER_FIRST_LOGIN_ERROR"
+  ],
   "adminEventsEnabled": false,
   "adminEventsDetailsEnabled": false,
   "components": {
@@ -1462,6 +1541,42 @@
       }
     ]
   },
+  "identityProviderMappers": [
+    {
+      "id": "dc92ca5d-d0d8-4431-a9a2-81e312ede892",
+      "name": "telephone",
+      "identityProviderAlias": "saml-test-id",
+      "identityProviderMapper": "saml-user-idp-mapper",
+      "config": {
+        "identifier": "mail",
+        "user.value": "telephone",
+        "attribute.friendly.name": "telephoneNumber"
+      }
+    },
+    {
+      "id": "7483e23e-7271-4ef6-b365-6d214de8cf88",
+      "name": "roleAttribute",
+      "identityProviderAlias": "saml-test-id",
+      "identityProviderMapper": "saml-user-idp-mapper",
+      "config": {
+        "identifier": "mail",
+        "user.value": "samlRole",
+        "attribute.friendly.name": "role"
+      }
+    },
+    {
+      "id": "d7d07f9d-e8af-4b9f-b98a-696605242bb4",
+      "name": "fullName",
+      "identityProviderAlias": "saml-test-id",
+      "identityProviderMapper": "saml-user-idp-mapper",
+      "config": {
+        "identifier": "mail",
+        "user.value": "fullName",
+        "attribute.friendly.name": "displayName"
+      }
+    }
+  ],
+
   "internationalizationEnabled": false,
   "supportedLocales": [],
   "authenticationFlows": [
@@ -1493,6 +1608,30 @@
           "flowAlias": "Verify Existing Account by Re-authentication",
           "userSetupAllowed": false,
           "autheticatorFlow": true
+        }
+      ]
+    },
+    {
+      "id": "d5a52591-3645-4ce6-8895-f917ffdb6a4b",
+      "alias": "Anonymous browser flow",
+      "description": "browser based authentication",
+      "providerId": "basic-flow",
+      "topLevel": true,
+      "builtIn": false,
+      "authenticationExecutions": [
+        {
+          "authenticator": "auth-cookie",
+          "requirement": "ALTERNATIVE",
+          "priority": 10,
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
+        },
+        {
+          "authenticator": "auth-anonymous",
+          "requirement": "ALTERNATIVE",
+          "priority": 11,
+          "userSetupAllowed": false,
+          "autheticatorFlow": false
         }
       ]
     },
@@ -1942,5 +2081,5 @@
     "offlineSessionMaxLifespanEnabled": "false"
   },
   "keycloakVersion": "7.0.1",
-  "userManagedAccessAllowed": true
+  "userManagedAccessAllowed": false
 }
