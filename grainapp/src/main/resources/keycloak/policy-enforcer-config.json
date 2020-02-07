@@ -1,0 +1,40 @@
+{
+  "enforcement-mode": "ENFORCING",
+  "lazy-load-paths": false,
+  "paths": [
+    {
+      "path": "/meeting",
+      "methods": [
+        {
+          "method": "POST",
+          "scopes": [
+            "create_meeting"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/meeting/{id}",
+      "methods": [
+        {
+          "method": "GET",
+          "scopes": [
+            "view_meeting"
+          ]
+        },
+        {
+          "method": "PUT",
+          "scopes": [
+            "update_meeting"
+          ]
+        },
+        {
+          "method": "DELETE",
+          "scopes": [
+            "delete_meeting"
+          ]
+        }
+      ]
+    }
+  ]
+}

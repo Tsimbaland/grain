@@ -1,0 +1,110 @@
+{
+  "allowRemoteResourceManagement": true,
+  "policyEnforcementMode": "ENFORCING",
+  "resources": [
+    {
+      "name": "meeting",
+      "ownerManagedAccess": false,
+      "displayName": "meeting",
+      "attributes": {},
+      "_id": "736777e9-426b-493e-8986-68687f81686d",
+      "uris": [
+        "/meeting"
+      ],
+      "scopes": [
+        {
+          "name": "create_meeting"
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "id": "b6fa912f-d628-45e3-8859-3d4f0b308e87",
+      "name": "Grant users from same company to view meeting",
+      "type": "js",
+      "logic": "POSITIVE",
+      "decisionStrategy": "UNANIMOUS",
+      "config": {
+        "code": "var context = $evaluation.getContext();\nvar identity = context.getIdentity();\nvar resourceAttributes = $evaluation.getPermission().getResource().getAttributes();\nvar identityAttributes = identity.getAttributes();\nif(resourceAttributes.get('company') !== null){\n    print('rexource att exists');\n    var resourceAttributeCompany = resourceAttributes.get('company')[0];\n    if(identityAttributes.exists('company')){\n        print('identity att exists');\n        var identityAttributecompany = identityAttributes.getValue('company').asString(0);\n        if (resourceAttributeCompany === identityAttributecompany) {\n            $evaluation.grant();\n        }\n    }\n}\n\n\n\n\n"
+      }
+    },
+    {
+      "id": "95f33c9d-9b38-4ec5-87b1-37a5392be3be",
+      "name": "Grant EDIT and DELETE meeting to owner only",
+      "type": "js",
+      "logic": "POSITIVE",
+      "decisionStrategy": "UNANIMOUS",
+      "config": {
+        "code": "var context = $evaluation.getContext();\nvar identity = context.getIdentity();\nvar ownerId = $evaluation.getPermission().getResource().getOwner();\nvar identityId = identity.getId();\n\nif(ownerId !== null && identityId !== null && ownerId == identityId){\n    $evaluation.grant();\n}"
+      }
+    },
+    {
+      "id": "628fd317-0157-4851-a020-d06f9bc43d67",
+      "name": "Grant all users",
+      "type": "js",
+      "logic": "POSITIVE",
+      "decisionStrategy": "UNANIMOUS",
+      "config": {
+        "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
+      }
+    },
+    {
+      "id": "14335fa0-761c-4b37-ad45-ea8c655644ec",
+      "name": "Allow users from same company to view meeting",
+      "type": "scope",
+      "logic": "POSITIVE",
+      "decisionStrategy": "UNANIMOUS",
+      "config": {
+        "scopes": "[\"view_meeting\"]",
+        "applyPolicies": "[\"Grant users from same company to view meeting\"]"
+      }
+    },
+    {
+      "id": "97dc9e96-8ff0-4d18-8184-6787f4f2caa7",
+      "name": "Allow edit and delete meeting to owner only",
+      "type": "scope",
+      "logic": "POSITIVE",
+      "decisionStrategy": "UNANIMOUS",
+      "config": {
+        "scopes": "[\"update_meeting\",\"delete_meeting\"]",
+        "applyPolicies": "[\"Grant EDIT and DELETE meeting to owner only\"]"
+      }
+    },
+    {
+      "id": "440a7123-04a9-4cc2-95f0-e3c5c70e4fa2",
+      "name": "Allow all users create meeting",
+      "type": "scope",
+      "logic": "POSITIVE",
+      "decisionStrategy": "UNANIMOUS",
+      "config": {
+        "resources": "[\"meeting\"]",
+        "scopes": "[\"create_meeting\"]",
+        "applyPolicies": "[\"Grant all users\"]"
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": "e12844cc-decb-49ae-938b-be0aead85da7",
+      "name": "create_meeting",
+      "displayName": "create_meeting"
+    },
+    {
+      "id": "6acad9b2-0168-4f19-8d7b-4fa0b331f1df",
+      "name": "update_meeting",
+      "displayName": "update_meeting"
+    },
+    {
+      "id": "d89ee122-ab82-461d-935d-ecb527b520c3",
+      "name": "delete_meeting",
+      "displayName": "delete_meeting"
+    },
+    {
+      "id": "301e36db-dffb-4f43-ae18-2df18b51e232",
+      "name": "view_meeting",
+      "displayName": "view_meeting"
+    }
+  ],
+  "decisionStrategy": "UNANIMOUS"
+}

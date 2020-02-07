@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: grain-app-auth
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true
+
+#    setting for access to grain manager
+
+keycloak:
+  config:
+    url: http://localhost:8180/auth
+    realm: GrainAppKeycloak
+    client-manager:
+      id: grain-manager
+      secret: 712285b5-d234-4658-af16-89335f2bb364
