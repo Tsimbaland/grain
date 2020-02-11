@@ -17,5 +17,6 @@ public class Customer {
     private String name;
     private String serviceRendered;
     private String address;
+    private int age;
 
 }
