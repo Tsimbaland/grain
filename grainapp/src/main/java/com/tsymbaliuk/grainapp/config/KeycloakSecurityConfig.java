@@ -2,12 +2,7 @@ package com.tsymbaliuk.grainapp.config;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.http.impl.client.HttpClients;
-import org.keycloak.adapters.KeycloakConfigResolver;
-import org.keycloak.adapters.KeycloakDeployment;
-import org.keycloak.adapters.KeycloakDeploymentBuilder;
-import org.keycloak.adapters.spi.HttpFacade;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
-import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
@@ -40,11 +35,6 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
         auth.authenticationProvider(keycloakAuthenticationProvider());
     }
 
-    @Bean
-    public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
-        return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
-    }
-
     /**
      * Defines the session authentication strategy.
      */
@@ -52,6 +42,11 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
     @Override
     protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
         return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
+    }
+
+    @Bean
+    public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
+        return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
     }
 
     @Override
@@ -65,7 +60,6 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
     }
 
     @Bean
-    @Profile("keycloak-init")
     public AuthzClient authzClient() {
         final Map<String, Object> credentials = new HashMap<>();
         credentials.put("secret", adapterConfig.getCredentials().get("secret"));

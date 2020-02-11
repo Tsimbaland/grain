@@ -1,37 +1,35 @@
 package com.tsymbaliuk.grainapp.web;
 
+import com.tsymbaliuk.grainapp.domain.Customer;
 import com.tsymbaliuk.grainapp.service.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.keycloak.authorization.client.AuthzClient;
+import org.keycloak.authorization.client.resource.ProtectedResource;
+import org.keycloak.representations.idm.authorization.ResourceRepresentation;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import javax.ws.rs.Path;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class WebController {
 
     private final CustomerService customerService;
+    private final AuthzClient authzClient;
 
-    @GetMapping(path = "/")
-    public String index() {
-        return "external";
+    @GetMapping(path = {"/simple"})
+    public List<Customer> getCustomers() {
+        return customerService.findAll();
     }
 
-    @GetMapping(path = "/customers")
-    public String customers(Principal principal, Model model) {
-        model.addAttribute("customers", customerService.findAll());
-        model.addAttribute("username", principal.getName());
-        return "customers";
-    }
+    @GetMapping(path = "/admin/{id}")
+    public List<Customer> getCustomersForAdmin(@PathVariable String id) {
+        ResourceRepresentation representation = authzClient.protection().resource().findById(id);
 
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request) throws ServletException {
-        request.logout();
-        return "external";
+        return customerService.findAllWithMinAge(20);
     }
 
 }
