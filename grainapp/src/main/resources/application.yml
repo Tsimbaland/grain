@@ -12,12 +12,17 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-#    setting for access to grain manager
-
 keycloak:
-  config:
-    url: http://localhost:8180/auth
-    realm: GrainAppKeycloak
-    client-manager:
-      id: grain-manager
-      secret: 712285b5-d234-4658-af16-89335f2bb364
+  auth-server-url: http://localhost:8180/auth
+  realm: GrainAppSimple
+  ssl-required: external
+  resource: grain-manager
+  verify-token-audience: true
+  credentials:
+    secret: 88f9c5cb-35de-4dba-8c16-799f4ef6a8de
+  confidential-port: 0
+  policy-enforcer: {}
+
+client-manager:
+  id: grain-manager
+  secret: 712285b5-d234-4658-af16-89335f2bb364
